@@ -1,0 +1,119 @@
+TFile *_file0 = TFile::Open("run-0437-00-analyzed.root")
+.ls
+.ls
+new TBrowser
+tree->Draw("si.TTime")
+tree->Draw("si.TEneRaw")
+.q
+TClonesArray *_hira = new TClonesArray("Hira");
+_hira
+TClonesArray &__hira = *_hira
+__hira
+__hira[0]
+__hira[1]
+__hira[2]
+_hira[0]
+_hira[1]
+&_hira[1]
+*_hira[1]
+_hira[1]
+_hira[0]
+__hira[1]
+*__hira[1]
+__hira[1]
+__hira
+__hira[0]
+hira
+&__hira[0]
+__hira[0]
+_hira
+(*_hira)
+(*_hira)[0]
+(*_hira)[1]
+_hira
+&_hira
+*_hira
+TFile *_file0 = TFile::Open("run-0664-00-analyzed.root")
+.ls
+tree->Draw("csi.TTele:csi.TCsI")
+tree->Draw("csi.TTele:csi.TCsI","","col")
+tree->Draw("csi.TTele:csi.TCsI>>(4,0,4,14,0,14)","","col")
+tree->Scan("csi.TTele:csi.TCsI","","")
+tree->Scan("csi.TEneRaw","","")
+tree->Draw("csi.TEneRaw","","")
+tree->Draw("csi.TEneRaw","csi.TTele==0","")
+tree->Draw("csi.TEneRaw","csi.TTele==1","")
+tree->Draw("csi.TEneRaw","csi.TTele==13","")
+tree->Draw("csi.TEneRaw","csi.TTele==12","")
+tree->Draw("csi.TEneRaw","csi.TTele==11","")
+tree->Draw("csi.TEneRaw","csi.TTele==10","")
+tree->Draw("csi.TEneRaw","csi.TTele==9","")
+tree->Draw("csi.TEneRaw","csi.TTele==8","")
+tree->Draw("csi.TEneRaw","csi.TTele==7","")
+tree->Draw("csi.TEneRaw","csi.TTele==6","")
+tree->Draw("csi.TEneRaw","csi.TTele==9","")
+tree->Draw("csi.TEneRaw>>(400,0,4000)","csi.TTele==9","")
+tree->Draw("csi.TEneRaw>>(400,0,4000)","csi.TTele==9&&csi.TCsI==0","")
+tree->Draw("csi.TEneRaw>>(400,0,4000)","csi.TTele==9&&csi.TCsI==1","")
+tree->Draw("csi.TEneRaw>>(400,0,4000)","csi.TTele==9&&csi.TCsI==2","")
+tree->Draw("csi.TEneRaw>>(400,0,4000)","csi.TTele==9&&csi.TCsI==3","")
+tree->Draw("csi.TEneRaw>>(400,0,4000)","csi.TTele==9&&csi.TCsI==4","")
+tree->Draw("csi.TEneRaw>>(400,0,4000)","csi.TTele==9&&csi.TCsI==3","")
+tree->Draw("csi.TEneRaw>>h1(400,0,4000)","csi.TTele==9&&csi.TCsI==3","")
+tree->Draw("csi.TEneRaw>>h1(300,0,3000)","csi.TTele==9&&csi.TCsI==3","")
+h1
+TSpectrum *s = new TSpectrum(21)
+Int_t nfound = s->Search(h1,1,"new");
+h1->Draw()
+Double_t *xpeaks = s->GetPositionX()
+xpeaks[0]
+xpeaks[1]
+Int_t *xpeaks = s->GetPositionX()
+Int_t *xpeakss = s->GetPositionX()
+xpeakss
+xpeakss[0]
+xpeakss[1]
+xpeakss[2]
+s->GetNPeaks()
+s->GetPositionX()
+Float_t *xp = s->GetPositionX()
+xp[0]
+xp[1]
+xp[20]
+xp[2]
+sort(xp,xp+21)
+#include <algorithm>
+sort
+sort(xp,xp+21)
+xp[0]
+xp[1]
+xp[2]
+xp[3]
+xp[4]
+xp[5]
+TFile *_file0 = TFile::Open("run-0667-00-analyzed.root")
+tree->Draw("si.TEneRaw:si.TStrip>>(32,0,32,512,0,16384)","si.TTele==0","col")
+tree->Draw("si.TEneRaw>>(512,0,16384)","si.TTele==0&&si.TStrip==7","")
+tree->Draw("si.TEneRaw>>(512,0,16384)","si.TTele==0&&si.TFace==1&&si.TStrip==7","")
+tree->Draw("si.TEneRaw:si.TStrip>>(32,0,32,512,0,16384)","si.TTele==0&&si.TFace==1","col")
+tree->Draw("si.TEneRaw:si.TStrip>>(32,0,32,512,0,16384)","si.TTele==0&&si.TFace==2","col")
+tree->Draw("si.TEneRaw:si.TStrip>>(32,0,32,512,0,16384)","si.TTele==10&&si.TFace==2","col")
+tree->Draw("si.TEneRaw:si.TStrip>>(32,0,32,512,0,16384)","si.TTele==10&&si.TFace==1","col")
+tree->Draw("si.TEneRaw:si.TStrip>>(32,0,32,4096,0,16384)","si.TTele==10&&si.TFace==1","col")
+.q
+TChain *tree = new TChain("tree")
+tree->Add("run-066*");
+tree->Draw("si.TEneRaw:si.TStrip>>(32,0,32,4096,0,16384)","si.TTree==7&&si.TFace==1","col")
+tree->Draw("si.TEneRaw:si.TStrip>>(32,0,32,4096,0,16384)","si.TTele==7&&si.TFace==1","col")
+.q
+TChain *tree = new TChain("tree")
+tree->Add("run-066*");
+.q
+TFile *_file0 = TFile::Open("run-0669-00-analyzed.root")
+tree->Draw("TNumTeleFired")
+tree->Draw("si.TEneRaw>>(4096,0,16384)","si.TTele==10&&si.TFace==1&&si.TStrip==14","")
+.q
+TChain *tree = new TChain("tree")
+tree->Add("run-066*");
+tree->Draw("si.TEneRaw>>(4096,0,16384)","si.TTele==10&&si.TFace==1&&si.TStrip==14","")
+.q
