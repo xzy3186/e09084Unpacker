@@ -19,7 +19,7 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
    uint16_t *nextMB = point;
    int NstripsReadXLM[4];
    int NstripsReadFADC[4];
-	int mult=0;
+   int mult=0;
    bool result = false;
    hira->Clear();
    for(int iMB=0; iMB<4; iMB++){
@@ -34,9 +34,9 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
       point += 2;
       NstripsReadXLM[iMB] = *point;
       if (NstripsReadXLM[iMB] > 650) {
-			//cout<<"ts = "<<hira->ts<<", channel = "<<NstripsReadXLM[iMB]<<endl;;
-			return false; // bad buffer
-		}
+         //cout<<"ts = "<<hira->ts<<", channel = "<<NstripsReadXLM[iMB]<<endl;;
+         return false; // bad buffer
+      }
       point += 5;
       //start filling fired channel into array
       for (int istrip = 0; istrip < NstripsReadXLM[iMB]; istrip++){
@@ -59,11 +59,11 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
          hira->si->TMB.push_back(iMB);
          hira->si->TCB.push_back(chipNum);
          hira->si->TCH.push_back(chanNum);
-			int tele = ChipTeleMap[iMB][chipNum];
-			int face = ChipFaceMap[iMB][chipNum];
-			//if(iMB==0&&chipNum==10){
-			//	cout<<"tele = "<<tele<<", face = "<<face<<endl;
-			//}
+         int tele = ChipTeleMap[iMB][chipNum];
+         int face = ChipFaceMap[iMB][chipNum];
+         //if(iMB==0&&chipNum==10){
+         //	cout<<"tele = "<<tele<<", face = "<<face<<endl;
+         //}
          hira->si->TTele.push_back(tele);
          hira->si->TFace.push_back(face);
          if(CHNeedInvert[face][tele]==1){
@@ -71,7 +71,7 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
          }else{
             hira->si->TStrip.push_back(31-chanNum);
          }
-			mult++;
+         mult++;
       }
    }
    point = nextMB;
@@ -81,7 +81,7 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
    //something following the marker, but I don't know the meaning. So skiped...
    int16_t some_strange = *point++;
    //cout<<hex<<some_strange<<endl;;
-	mult=0;
+   mult=0;
    for(int iMB=0; iMB<4; iMB++){
       NstripsReadFADC[iMB] = *point++;
       //cout<<NstripsReadFADC[iMB]<<endl;
@@ -90,50 +90,50 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
       for (int  istrip = 0; istrip < NstripsReadFADC[iMB]; istrip++){
          uint16_t time = *point++;
          uint16_t energy = *point++;
-			int tele = hira->si->TTele[mult];
-			int face = hira->si->TFace[mult];
-			int strip = hira->si->TStrip[mult];
+         int tele = hira->si->TTele[mult];
+         int face = hira->si->TFace[mult];
+         int strip = hira->si->TStrip[mult];
          if(ENNeedInvert[face][tele]==1){
-				energy = energy & 0x3fff;
+            energy = energy & 0x3fff;
          }else{
             energy = 16383-(energy & 0x3fff);
          }
-			hira->si->TEneRaw.push_back(energy);
-			hira->si->TTime.push_back(time & 0x3fff);
+         hira->si->TEneRaw.push_back(energy);
+         hira->si->TTime.push_back(time & 0x3fff);
          if(energy>0 && energy<16383){
             hira->si->TNormal.push_back(1);
          }else{
             hira->si->TNormal.push_back(0);
          }
-			float _energy = sislope[tele][face][strip]*energy+sioffset[tele][face][strip];
-			hira->si->TEnergy.push_back(_energy);
-			mult++;
+         float _energy = sislope[tele][face][strip]*energy+sioffset[tele][face][strip];
+         hira->si->TEnergy.push_back(_energy);
+         mult++;
       }
       uint16_t is_aaaa = *point++;
-		//cout<<"The last word of the "<<iMB<<" fadc is "<<hex<<is_aaaa<<dec<<endl;
-		if(is_aaaa!=0xaaaa){
-			return false;
-		}
+      //cout<<"The last word of the "<<iMB<<" fadc is "<<hex<<is_aaaa<<dec<<endl;
+      if(is_aaaa!=0xaaaa){
+         return false;
+      }
       //cout<<hex<<is_aaaa<<endl;
    }
-	hira->si->TMult = mult;
+   hira->si->TMult = mult;
    //cout<<"caen adc marker: "<<hex<<*point<<dec<<endl;
-	mult=0;
+   mult=0;
    for(int iadc=0; iadc<2; iadc++){
       uint16_t f3 = *point;
       uint16_t f4 = *(point+1);
       if(f3 == 0xffff && f4 == 0xffff){
          point = point + 2;
-			
+
          continue;
       }
       caen ADC;
       ADC.number = 0;
       //cout<<"The first word of the "<<iadc+1<<"st/rd ADC is "<<hex<<*point<<" "<<*(point+1)<<dec<<endl;
       point = ADC.read(point);//call the reading function defined in caen.h
-		if(point == 0){
-			return false;
-		}
+      if(point == 0){
+         return false;
+      }
       //cout<<"The first word after reading the "<<iadc+1<<"st/rd ADC is "<<hex<<*point<<" "<<*(point+1)<<dec<<endl;
       for(int i=0; i<ADC.number; i++){
          if(ADC.underflow[i]) continue;
@@ -150,33 +150,33 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
          int csi = AdcCsiMap[iadc][ch];
          if(tele>=0 && csi>=0){
             hira->csi->TEneRaw.push_back(ene);
-				hira->csi->TADC.push_back(iadc);
-				hira->csi->TCH.push_back(ch);
-				hira->csi->TTele.push_back(tele);
-				hira->csi->TCsI.push_back(csi);
-				if(ene>0 && ene<4096){
-					hira->csi->TNormal.push_back(1);
-				}else{
-					hira->csi->TNormal.push_back(0);
-				}
-				float _ene = ene*csislope[tele][csi]+csioffset[tele][csi];
-				hira->csi->TEnergy.push_back(_ene);
-				mult++;
+            hira->csi->TADC.push_back(iadc);
+            hira->csi->TCH.push_back(ch);
+            hira->csi->TTele.push_back(tele);
+            hira->csi->TCsI.push_back(csi);
+            if(ene>0 && ene<4096){
+               hira->csi->TNormal.push_back(1);
+            }else{
+               hira->csi->TNormal.push_back(0);
+            }
+            float _ene = ene*csislope[tele][csi]+csioffset[tele][csi];
+            hira->csi->TEnergy.push_back(_ene);
+            mult++;
          }
       }
       f3 = *point;
       f4 = *(point+1);
-		if(f3!=0xffff || f4!=0xffff){
-			return false;
-		}
+      if(f3!=0xffff || f4!=0xffff){
+         return false;
+      }
       point = point + 2;
    }
-	hira->csi->TMult=mult;
+   hira->csi->TMult=mult;
    //cout<<"The first word after reading ADC is "<<hex<<*point<<" "<<*(point+1)<<dec<<endl;
    uint16_t f3 = *point;
    uint16_t f4 = *(point+1);
    if(f3 == 0xffff && f4 == 0xffff){//to see if there is v1190 stuff
-         point = point + 2;
+      point = point + 2;
    }else{
       TDC1190 tdc(1,0,1);
       point = tdc.read(point);//reading it, but not going to do with it
@@ -193,9 +193,9 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
       caen QDC;
       QDC.number = 0;
       point = QDC.read(point);
-		if(point==0){
-			return false;
-		}
+      if(point==0){
+         return false;
+      }
       //cout<<"The first word after reading the "<<iqdc+1<<"st/rd QDC is "<<hex<<*point<<" "<<*(point+1)<<dec<<endl;
       for(int i=0; i<QDC.number; i++){
          if(QDC.underflow[i]) continue;
@@ -211,9 +211,9 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
       }
       f3 = *point;
       f4 = *(point+1);
-		if(f3!=0xffff || f4!=0xffff){
-			return false;
-		}
+      if(f3!=0xffff || f4!=0xffff){
+         return false;
+      }
       point = point + 2;
    }
    hira->mcp->TMCP[0][0] = hira->mcp->TQDC[0][16];
@@ -241,7 +241,7 @@ bool HiraProcess::HiraUnpack(uint16_t* point){
 }
 
 void HiraProcess::SetTS(long long int timestamp){
-	hira->ts = timestamp;
+   hira->ts = timestamp;
 }
 
 void HiraProcess::readChipTeleMap(char* filename){
@@ -366,8 +366,8 @@ void HiraProcess::readCalibCsiTable(char* filename){
    // initialize
    for(int i=0; i<14; i++){
       for(int j=0; j<4; j++){
-			csislope[i][j]=1;
-			csioffset[i][j]=0;
+         csislope[i][j]=1;
+         csioffset[i][j]=0;
       }
    }
    ifstream file(filename);
@@ -476,9 +476,9 @@ void HiraProcess::SimpleAnalysis(){
       simax[i][0] = 0.1;//0.1 MeV as threshold
       simax[i][1] = 1;//1 MeV as threshold
       simax[i][2] = 1;//1 MeV as threshold
-		csimaxraw[i]=120;
-		csimax[i]=-1;
-		csimaxch[i]=-1;
+      csimaxraw[i]=120;
+      csimax[i]=-1;
+      csimaxch[i]=-1;
       for(int j=0; j<3; j++){
          simaxch[i][j] = -1;
       }
@@ -491,7 +491,7 @@ void HiraProcess::SimpleAnalysis(){
       int tele = hira->si->TTele[i];
       int face = hira->si->TFace[i];
       int ch = hira->si->TStrip[i];
-		float energy = hira->si->TEnergy[i];
+      float energy = hira->si->TEnergy[i];
       if(energy > simax[tele][face] && energy < 25){//set maximum energy to be 25 MeV for both dE and E
          tele_fired[tele] = 1;
          simax[tele][face] = energy;
@@ -505,9 +505,9 @@ void HiraProcess::SimpleAnalysis(){
       }
       int tele = hira->csi->TTele[i];
       int _csi = hira->csi->TCsI[i];
-		float energy = hira->csi->TEneRaw[i];
+      float energy = hira->csi->TEneRaw[i];
       if(energy > csimaxraw[tele]){
-			csi_fired[tele] = 1;
+         csi_fired[tele] = 1;
          csimaxraw[tele] = energy;
          csimax[tele] = hira->csi->TEnergy[i];
          csimaxch[tele] = _csi;
@@ -520,12 +520,12 @@ void HiraProcess::SimpleAnalysis(){
          hira->reco->TTeleFired.push_back(i);
          if(csi_fired[i]==0){
             hira->reco->TIfCsIFired.push_back(0);
-				hira->reco->TCsIMax.push_back(-1);
-				hira->reco->TCsIMaxCh.push_back(-1);
+            hira->reco->TCsIMax.push_back(-1);
+            hira->reco->TCsIMaxCh.push_back(-1);
          }else{
             hira->reco->TIfCsIFired.push_back(1);
-				hira->reco->TCsIMax.push_back(csimax[i]);
-				hira->reco->TCsIMaxCh.push_back(csimaxch[i]);
+            hira->reco->TCsIMax.push_back(csimax[i]);
+            hira->reco->TCsIMaxCh.push_back(csimaxch[i]);
          }
          hira->reco->TdEMax.push_back(simax[i][0]);
          hira->reco->TdEMaxCh.push_back(simaxch[i][0]);

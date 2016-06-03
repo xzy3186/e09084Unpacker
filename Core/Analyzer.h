@@ -48,16 +48,16 @@ class Analyzer
 
       TFile* f;
       TTree* tree;
-		S800* s800;
-		S800Event* s800event;
-		Hira* _hira;
-		HiraProcess* hira_proc;
-		int hira_fired;
-		int s800_fired;
+      S800* s800;
+      S800Event* s800event;
+      Hira* _hira;
+      HiraProcess* hira_proc;
+      int hira_fired;
+      int s800_fired;
 
       int nevent;  
-		int badevent;
-		int goodevent;
+      int badevent;
+      int goodevent;
 
    public:
       Analyzer();

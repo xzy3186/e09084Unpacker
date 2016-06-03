@@ -56,15 +56,15 @@ Analyzer::Analyzer()
    cout<<tree<<endl;
    tree->SetDirectory(0);
 
-	_hira = new Hira;
-	//cout<<"come here"<<endl;
-	//cout<<"pointer to Hira class is "<<_hira<<endl;
-	hira_proc = new HiraProcess(_hira);
-	s800 = new S800;
-	s800event = new S800Event;
-	tree->Branch("hira", &_hira, 320000);
-	tree->Branch("s800event", &s800event, 320000);
-	tree->BranchRef();
+   _hira = new Hira;
+   //cout<<"come here"<<endl;
+   //cout<<"pointer to Hira class is "<<_hira<<endl;
+   hira_proc = new HiraProcess(_hira);
+   s800 = new S800;
+   s800event = new S800Event;
+   tree->Branch("hira", &_hira, 320000);
+   tree->Branch("s800event", &s800event, 320000);
+   tree->BranchRef();
 }
 
 Analyzer::~Analyzer()
@@ -92,8 +92,8 @@ void Analyzer::operator()(FragmentIndex& index)
       //cout<<"Events proccessed: "<<nevent<<endl;
    };
 
-	//cout<<"come here"<<endl;
-	++nevent;
+   //cout<<"come here"<<endl;
+   ++nevent;
 
    bool foundStack = false;
    bool filltree = false;
@@ -101,8 +101,8 @@ void Analyzer::operator()(FragmentIndex& index)
    long long int s800tstamp = 0;
    int s800count=0;
    int stackcount=0;
-	hira_fired=0;
-	s800_fired=0;
+   hira_fired=0;
+   s800_fired=0;
 
    FragmentIndex::iterator it=index.begin();
    FragmentIndex::iterator end=index.end();
@@ -115,19 +115,19 @@ void Analyzer::operator()(FragmentIndex& index)
             stacktstamp = it->s_timestamp;
             foundStack = true;
             uint16_t *point = it->s_itembody+5; //pointing to the starting word (b0fe a51c)
-				if(*point!=0xb0fe || *(point+1)!=0xa51c){
-					filltree = false;
-					continue;
-				}
-				point = point + 2; //pointing to the xlm marker (1ff3, 1ff4, etc)
+            if(*point!=0xb0fe || *(point+1)!=0xa51c){
+               filltree = false;
+               continue;
+            }
+            point = point + 2; //pointing to the xlm marker (1ff3, 1ff4, etc)
             //cout<<"Timestamp is: "<<stacktstamp<<endl;
             //cout<<"first body data is: "<<std::hex<<*point<<std::dec<<endl;
             filltree = hira_proc->HiraUnpack(point);
             hira_proc->SetTS(stacktstamp);
-				//cout<<"\r"<<flush;
+            //cout<<"\r"<<flush;
             if(filltree){
                hira_proc->SimpleAnalysis();
-					hira_fired=1;
+               hira_fired=1;
             }
             ++stackcount;
          }
@@ -136,22 +136,22 @@ void Analyzer::operator()(FragmentIndex& index)
          if (ritem_type == 30) {
             s800tstamp = it->s_timestamp;
             uint16_t *point = it->s_itembody;
-				uint16_t evtlength = *(point-1)-1;//self included
-				s800->Clear();
-				int error = s800->DecodeS800(point, evtlength);
-				if(error){
-					cout<<"come error"<<endl;
-					filltree = false;
-					continue;
-			   }else{
-					filltree = true;
-					s800_fired=1;
-				}
-				s800->SetTS(s800tstamp);
-				s800event->SetS800(*s800);
+            uint16_t evtlength = *(point-1)-1;//self included
+            s800->Clear();
+            int error = s800->DecodeS800(point, evtlength);
+            if(error){
+               cout<<"come error"<<endl;
+               filltree = false;
+               continue;
+            }else{
+               filltree = true;
+               s800_fired=1;
+            }
+            s800->SetTS(s800tstamp);
+            s800event->SetS800(*s800);
             //cout<<"event length: "<<evtlength<<endl;
-			}
-		}
+         }
+      }
       NumOfFrag++;
       ++it;
    }
@@ -162,10 +162,10 @@ void Analyzer::operator()(FragmentIndex& index)
       //cout<<"TMult = "<<TMult<<", TNumTeleFired = "<<TNumTeleFired<<endl;
       tree->SetDirectory(f);
       tree->Fill();
-		goodevent++;
-		//cout<<"good event"<<endl;
+      goodevent++;
+      //cout<<"good event"<<endl;
    }else{
-		badevent++;
-		//cout<<"bad event"<<endl;
-	}
+      badevent++;
+      //cout<<"bad event"<<endl;
+   }
 }
